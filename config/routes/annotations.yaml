@@ -1,0 +1,7 @@
+controller_poscredit_opt:
+    resource: ../../src/Poscredit/OTP/Application/Controller/
+    type: annotation
+
+kernel:
+    resource: ../../src/Kernel.php
+    type: annotation
