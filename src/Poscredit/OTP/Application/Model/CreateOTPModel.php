@@ -7,7 +7,7 @@ namespace App\Poscredit\OTP\Application\Model;
  * 
  * @author Владислав Теренчук <asdof71@yandex.ru>
  */
-final class CreateOTPCommand
+final class CreateOTPModel
 {
     private string $phone;
 

@@ -1,0 +1,5 @@
+App\Poscredit\Shared\ValueObject\ID:
+  type: embeddable
+  fields:
+    id:
+      type: guid

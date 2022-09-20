@@ -3,8 +3,10 @@
 namespace App\Poscredit\OTP\Domain\Entity;
 
 use App\DomainEvents;
+use App\Poscredit\OTP\Domain\Entity\Code;
 use App\Poscredit\OTP\Domain\Event\OTPCreatedEvent;
-use App\Poscredit\OTP\Domain\Entity\ValueObject\OTPId;
+use App\Poscredit\Shared\ValueObject\ID;
+use App\Poscredit\Shared\ValueObject\Phone;
 
 /**
  * Одноразового пароль домена
@@ -13,20 +15,20 @@ use App\Poscredit\OTP\Domain\Entity\ValueObject\OTPId;
  */
 class OTP extends DomainEvents
 {
-    private string $id;
+    private ID $id;
 
-    private string $phone;
+    private Phone $phone;
 
-    private string $code;
+    private Code $code;
 
     private \DateTimeImmutable $createdAt;
 
     private \DateTimeImmutable $expiresAt;
 
     public function __construct(
-        OTPId $id, 
-        string $phone, 
-        string $code, 
+        ID $id, 
+        Phone $phone, 
+        Code $code, 
         \DateTimeImmutable $createdAt, 
         \DateTimeImmutable $expiresAt
     ) {
@@ -37,22 +39,22 @@ class OTP extends DomainEvents
         $this->expiresAt = $expiresAt;
     }
 
-    public function getId(): string
+    public function getId(): ID
     {
         return $this->id;
     }
 
-    public function getPhone(): string
+    public function getPhone(): Phone
     {
         return $this->phone;
     }
 
-    public function getCode(): string
+    public function getCode(): Code
     {
         return $this->code;
     }
 
-    public function setCode(string $code): self
+    public function setCode(Code $code): self
     {
         $this->code = $code;
 
@@ -70,8 +72,8 @@ class OTP extends DomainEvents
     }
 
     public static function create(
-        OTPId $id, 
-        string $phone
+        ID $id, 
+        Phone $phone
     ): self
     {
         $now = new \DateTimeImmutable();
@@ -79,7 +81,7 @@ class OTP extends DomainEvents
         $otp = new OTP(
             $id,
             $phone,
-            sprintf("%06d", mt_rand(1, 999999)),
+            new Code(),
             $now,
             $now->modify('+5 minutes')
         );

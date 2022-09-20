@@ -5,9 +5,10 @@ namespace App\Poscredit\OTP\Application\Service;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use App\Poscredit\OTP\Application\Model\VerifyOTPCommand;
+use App\Poscredit\OTP\Application\Model\VerifyOTPModel;
 use App\Poscredit\OTP\Domain\Entity\OTP;
 use App\Poscredit\OTP\Domain\Repository\OTPRepositoryInterface;
+use App\Poscredit\OTP\Infrastructure\Repository\OTPRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -19,6 +20,7 @@ final class VerifyOTPService implements MessageHandlerInterface
 {
     private EventDispatcherInterface $eventDispatcher;
 
+    /** @var OTPRepository */
     private OTPRepositoryInterface $otpRepository;
 
     private SerializerInterface $serializer;
@@ -35,15 +37,15 @@ final class VerifyOTPService implements MessageHandlerInterface
         $this->serializer = $serializer;
     }
 
-    public function __invoke(VerifyOTPCommand $verifyOTPCommand): string
+    public function __invoke(VerifyOTPModel $verifyOTPModel): string
     {
         /** @var OTP */
-        $otp = $this->otpRepository->find($verifyOTPCommand->getId());
+        $otp = $this->otpRepository->find($verifyOTPModel->getId());
         if (!$otp || $otp->getExpiresAt() < new \DateTimeImmutable()) {
             throw new \InvalidArgumentException('OTP is expired, please send a new one');
         }
 
-        $eq = $this->otpRepository->verify($otp, $verifyOTPCommand->getCode());
+        $eq = $this->otpRepository->verify($otp, $verifyOTPModel->getCode());
 
         if ($eq) {
             $this->otpRepository->delete($otp);

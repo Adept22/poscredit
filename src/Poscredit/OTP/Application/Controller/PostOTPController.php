@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Poscredit\OTP\Application\Model\CreateOTPCommand;
+use App\Poscredit\OTP\Application\Model\CreateOTPModel;
 
 /**
  * Контролер реализует ендпоинт генерации одноразового пароля
@@ -30,9 +30,9 @@ final class PostOTPController extends AbstractController
     {
         $args = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
 
-        $createOTPCommand = new CreateOTPCommand($args['phone']);
+        $createOTPModel = new CreateOTPModel($args['phone']);
 
-        $result = $this->handle($createOTPCommand);
+        $result = $this->handle($createOTPModel);
 
         return JsonResponse::fromJsonString($result);
     }

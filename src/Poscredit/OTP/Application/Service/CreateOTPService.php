@@ -2,15 +2,17 @@
 
 namespace App\Poscredit\OTP\Application\Service;
 
+use App\Poscredit\OTP\Application\Event\OnOTPCreatedEvent;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use App\Poscredit\OTP\Application\Model\CreateOTPCommand;
+use App\Poscredit\OTP\Application\Model\CreateOTPModel;
 use App\Poscredit\OTP\Domain\Entity\OTP;
 use App\Poscredit\OTP\Domain\Repository\OTPRepositoryInterface;
-use App\Poscredit\OTP\Domain\Entity\ValueObject\OTPId;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use App\Poscredit\OTP\Infrastructure\Repository\OTPRepository;
+use App\Poscredit\Shared\ValueObject\ID;
+use App\Poscredit\Shared\ValueObject\Phone;
 
 /**
  * Слушатель команд на создание одноразового пароля
@@ -21,59 +23,48 @@ final class CreateOTPService implements MessageHandlerInterface
 {
     private EventDispatcherInterface $eventDispatcher;
 
-    private OTPRepositoryInterface $otpRepository;
-
     private SerializerInterface $serializer;
+
+    /** 
+     * @var OTPRepository $otpRepository 
+     */
+    private OTPRepositoryInterface $otpRepository;
 
     public function __construct(
         OTPRepositoryInterface $otpRepository,
-        ContainerInterface $container,
         EventDispatcherInterface $eventDispatcher,
         SerializerInterface $serializer
     ) {
         $this->otpRepository = $otpRepository;
-        $this->container = $container;
         $this->eventDispatcher = $eventDispatcher;
         $this->serializer = $serializer;
     }
 
-    public function __invoke(CreateOTPCommand $createOTPCommand): string
+    public function __invoke(CreateOTPModel $createOTPModel): string
     {
-        $otp = $this->otpRepository->findOneByPhone($createOTPCommand->getPhone());
+        $otp = $this->otpRepository->findOneBy(
+            ["phone.phone" => $createOTPModel->getPhone()], 
+            ["createdAt" => "DESC"]
+        );
         if ($otp && $otp->getExpiresAt() > new \DateTimeImmutable()) {
             throw new \InvalidArgumentException('OTP was already send');
         }
 
         $otp = OTP::create(
-            new OTPId(Uuid::uuid1()),
-            $createOTPCommand->getPhone()
+            new ID(Uuid::uuid1()),
+            new Phone($createOTPModel->getPhone())
         );
-        
-        // Правильно было бы вынести это в отдельный домен и сервис
-        $body = file_get_contents(
-            "https://sms.ru/sms/send?api_id=" 
-            . $this->container->getParameter('smsru_api_id') 
-            . "&to=" 
-            . $otp->getPhone() 
-            . "&msg=" 
-            . urlencode($otp->getCode()) 
-            . "&json=1"
-        );
-        $json = json_decode($body);
-        
-        if ($json) {
-            if ($json->status != "OK") {
-                throw new \RuntimeException("Unable to send code (" . $json->status_code . ")");
-            }
-        } else {
-            throw new \RuntimeException("Unable to send code");
-        }
 
         $this->otpRepository->save($otp);
 
         foreach ($otp->getDomainEvents() as $domainEvent) {
             $this->eventDispatcher->dispatch($domainEvent);
         }
+
+        $this->eventDispatcher->dispatch(new OnOTPCreatedEvent(
+            (string) $otp->getPhone(),
+            $otp->getCode()->getValue()
+        ));
 
         return $this->serializer->serialize($otp, 'json');
     }

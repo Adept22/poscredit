@@ -3,9 +3,6 @@ App\Poscredit\OTP\Domain\Entity\OTP:
   repositoryClass: App\Poscredit\OTP\Infrastructure\Repository\OTPRepository
   table: otp
   schema: poscredit
-  indexes:
-    name_index:
-      columns: [ phone ]
   id:
     id:
       type: uuid
@@ -14,17 +11,16 @@ App\Poscredit\OTP\Domain\Entity\OTP:
       customIdGenerator:
         class: Ramsey\Uuid\Doctrine\UuidGenerator
   fields:
-    phone:
-      type: string
-      nullable: false
-      length: 11
-    code:
-      type: string
-      nullable: false
-      length: 64
     createdAt:
       type: datetimetz_immutable
       nullable: false
+      options:
+        default: CURRENT_TIMESTAMP
     expiresAt:
       type: datetimetz_immutable
       nullable: false
+  embedded:
+    phone:
+      class: App\Poscredit\Shared\ValueObject\Phone
+    code:
+      class: App\Poscredit\OTP\Domain\Entity\Code

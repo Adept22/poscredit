@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Poscredit\OTP\Application\Model\VerifyOTPCommand;
+use App\Poscredit\OTP\Application\Model\VerifyOTPModel;
 
 /**
  * Контролер реализует ендпоинт проверки одноразового пароля
@@ -30,9 +30,9 @@ final class PutOTPController extends AbstractController
     {
         $args = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
 
-        $verifyOTPCommand = new VerifyOTPCommand($id, $args['code']);
+        $verifyOTPModel = new VerifyOTPModel($id, $args['code']);
 
-        $result = $this->handle($verifyOTPCommand);
+        $result = $this->handle($verifyOTPModel);
 
         return JsonResponse::fromJsonString($result);
     }

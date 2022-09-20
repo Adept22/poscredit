@@ -1,0 +1,38 @@
+App\Poscredit\SMSRU\Domain\Entity\SMS:
+  type: entity
+  repositoryClass: App\Poscredit\SMSRU\Infrastructure\Repository\SMSRepository
+  table: sms
+  schema: poscredit
+  id:
+    id:
+      type: uuid
+      generator:
+        strategy: CUSTOM
+      customIdGenerator:
+        class: Ramsey\Uuid\Doctrine\UuidGenerator
+  fields:
+    to:
+      type: string
+      length: 251
+      nullable: false
+    msg:
+      type: text
+      nullable: false
+    smsruId:
+      type: string
+      length: 16
+    status:
+      type: integer
+      nullable: false
+      options:
+        default: -1
+    createdAt:
+      type: datetimetz_immutable
+      nullable: false
+      options:
+        default: CURRENT_TIMESTAMP
+    updatedAt:
+      type: datetimetz_immutable
+      nullable: false
+      options:
+        default: CURRENT_TIMESTAMP

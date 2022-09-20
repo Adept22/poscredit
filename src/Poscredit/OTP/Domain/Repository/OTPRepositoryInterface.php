@@ -12,34 +12,6 @@ use App\Poscredit\OTP\Domain\Entity\OTP;
 interface OTPRepositoryInterface
 {
     /**
-     * Ищет одноразовый пароль по идентификатору
-     * 
-     * @param string $id
-     * 
-     * @return OTP|null
-     */
-    public function find(string $id): ?OTP;
-
-    /**
-     * Сверяет одноразовый пароль с хешем
-     * 
-     * @param OTP $otp
-     * @param string $code
-     * 
-     * @return bool
-     */
-    public function verify(OTP $otp, string $code): bool;
-
-    /**
-     * Ищет последний отправленный одноразовый пароль по номеру телефона
-     * 
-     * @param string $phone
-     * 
-     * @return OTP|null
-     */
-    public function findOneByPhone(string $phone): ?OTP;
-
-    /**
      * Сохраняет одноразовый пароль
      * 
      * @param OTP $otp

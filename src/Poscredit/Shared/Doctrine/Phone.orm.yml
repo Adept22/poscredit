@@ -1,0 +1,7 @@
+App\Poscredit\Shared\ValueObject\Phone:
+  type: embeddable
+  fields:
+    phone:
+      type: string
+      nullable: false
+      length: 11

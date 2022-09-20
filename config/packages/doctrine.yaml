@@ -10,12 +10,24 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
+            Shared:
+                type: yml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Poscredit/Shared/Doctrine'
+                prefix: 'App\Poscredit\Shared\ValueObject'
+                alias: Shared
             OTP:
                 type: yml
                 is_bundle: false
                 dir: '%kernel.project_dir%/src/Poscredit/OTP/Infrastructure/Doctrine'
                 prefix: 'App\Poscredit\OTP\Domain\Entity'
                 alias: OTP
+            SMSRU:
+                type: yml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Poscredit/SMSRU/Infrastructure/Doctrine'
+                prefix: 'App\Poscredit\SMSRU\Domain\Entity'
+                alias: SMSRU
 
 when@test:
     doctrine:
