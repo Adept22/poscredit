@@ -13,26 +13,20 @@ App\Poscredit\SMSRU\Domain\Entity\SMS:
   fields:
     to:
       type: string
+      column: sms_to
       length: 251
-      nullable: false
     msg:
       type: text
-      nullable: false
+    status:
+      type: integer
+      column: sms_status
+      options:
+        default: -1
     smsruId:
       type: string
       length: 16
-    status:
-      type: integer
-      nullable: false
-      options:
-        default: -1
+      nullable: true
     createdAt:
       type: datetimetz_immutable
-      nullable: false
-      options:
-        default: CURRENT_TIMESTAMP
-    updatedAt:
-      type: datetimetz_immutable
-      nullable: false
       options:
         default: CURRENT_TIMESTAMP

@@ -28,8 +28,8 @@ docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 curl -i \
 	-X POST \
 	-H 'Accept: application/json' \
-	-d '{ "phone": "79995551122" }'
-	https://localhost:8080/api/otp
+	-d '{ "phone": "79995551122" }' \
+	http://localhost:8080/api/otp
 ```
 Успешный ответ:
 ```
@@ -59,8 +59,8 @@ Content-Type: application/json
 curl -i \
 	-X PUT \
 	-H 'Accept: application/json' \
-	-d '{ "code": "505478" }'
-	https://localhost:8080/api/otp/6f30da7d-a248-496e-b51a-b2b0d5bc86e6
+	-d '{ "code": "855678" }' \
+	http://localhost:8080/api/otp/6f30da7d-a248-496e-b51a-b2b0d5bc86e6
 ```
 Успешный ответ:
 ```
@@ -71,5 +71,7 @@ Connection: close
 Content-Type: application/json
 ```
 ```json
-true
+{
+	"success": true
+}
 ```

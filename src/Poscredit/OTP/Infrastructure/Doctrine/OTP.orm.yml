@@ -22,5 +22,7 @@ App\Poscredit\OTP\Domain\Entity\OTP:
   embedded:
     phone:
       class: App\Poscredit\Shared\ValueObject\Phone
+      columnPrefix: false
     code:
       class: App\Poscredit\OTP\Domain\Entity\Code
+      columnPrefix: false

@@ -7,15 +7,16 @@ use App\Poscredit\OTP\Domain\Entity\Code;
 use App\Poscredit\OTP\Domain\Event\OTPCreatedEvent;
 use App\Poscredit\Shared\ValueObject\ID;
 use App\Poscredit\Shared\ValueObject\Phone;
+use Ramsey\Uuid\Uuid;
 
 /**
- * Одноразового пароль домена
+ * Одноразовый пароль
  * 
  * @author Владислав Теренчук <asdof71@yandex.ru>
  */
 class OTP extends DomainEvents
 {
-    private ID $id;
+    private string $id;
 
     private Phone $phone;
 
@@ -41,7 +42,7 @@ class OTP extends DomainEvents
 
     public function getId(): ID
     {
-        return $this->id;
+        return new ID(Uuid::fromString($this->id));
     }
 
     public function getPhone(): Phone

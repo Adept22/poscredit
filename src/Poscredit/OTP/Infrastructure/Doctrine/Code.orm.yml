@@ -1,7 +1,7 @@
 App\Poscredit\OTP\Domain\Entity\Code:
   type: embeddable
   fields:
-    hash:
+    code:
       type: string
       nullable: false
       length: 64

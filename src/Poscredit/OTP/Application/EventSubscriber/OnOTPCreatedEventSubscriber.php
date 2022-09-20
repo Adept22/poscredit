@@ -7,6 +7,11 @@ use App\Poscredit\SMSRU\Application\Model\SendSMSModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
+/**
+ * Слушатель событий создания одноразового пароля
+ * 
+ * @author Владислав Теренчук <asdof71@yandex.ru>
+ */
 final class OnOTPCreatedEventSubscriber implements EventSubscriberInterface
 {
     private MessageBusInterface $messageBus;
@@ -29,7 +34,7 @@ final class OnOTPCreatedEventSubscriber implements EventSubscriberInterface
             [$event->getPhone()],
             $event->getCode()
         );
-
+        
         $this->messageBus->dispatch($sendSMSModel);
     }
 }

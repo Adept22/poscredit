@@ -6,36 +6,34 @@ use App\DomainEvents;
 use App\Poscredit\Shared\ValueObject\ID;
 use App\Poscredit\Shared\ValueObject\Phone;
 use App\Poscredit\SMSRU\Domain\Event\SMSCreatedEvent;
+use Ramsey\Uuid\Uuid;
 
 /**
- * Одноразового пароль домена
+ * СМС
  * 
  * @author Владислав Теренчук <asdof71@yandex.ru>
  */
 class SMS extends DomainEvents
 {
-    private ID $id;
+    private string $id;
 
     private Phone $to;
     
     private string $msg;
 
-    private string $smsruId;
-
     private int $status;
+    
+    private ?string $smsruId;
 
     private \DateTimeImmutable $createdAt;
-
-    private \DateTimeImmutable $updatedAt;
 
     public function __construct(
         ID $id,
         Phone $to,
         string $msg,
-        string $smsruId,
         int $status,
-        ?\DateTimeImmutable $createdAt = null,
-        ?\DateTimeImmutable $updatedAt = null
+        ?string $smsruId = null,
+        ?\DateTimeImmutable $createdAt = null
     ) {
         $this->id = $id->getValue();
         $this->to = $to;
@@ -43,12 +41,11 @@ class SMS extends DomainEvents
         $this->smsruId = $smsruId;
         $this->status = $status;
         $this->createdAt = $createdAt ?? new \DateTimeImmutable();
-        $this->updatedAt = $updatedAt ?? new \DateTimeImmutable();
     }
 
     public function getId(): ID
     {
-        return $this->id;
+        return new ID(Uuid::fromString($this->id));
     }
 
     public function getTo(): Phone
@@ -76,26 +73,15 @@ class SMS extends DomainEvents
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): \DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
     public static function create(
         ID $id,
         Phone $to,
         string $msg,
-        string $smsruId,
-        int $status
+        int $status,
+        ?string $smsruId = null
     ): self
     {
-        $sms = new SMS(
-            $id, 
-            $to, 
-            $msg, 
-            $smsruId, 
-            $status
-        );
+        $sms = new SMS($id, $to, $msg, $status, $smsruId);
 
         $sms->addDomainEvent(new SMSCreatedEvent($id));
 

@@ -6,7 +6,7 @@ use App\DomainEventInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- * Событие созданного одноразового пароля
+ * Событие создания одноразового пароля
  * 
  * @author Владислав Теренчук <asdof71@yandex.ru>
  */

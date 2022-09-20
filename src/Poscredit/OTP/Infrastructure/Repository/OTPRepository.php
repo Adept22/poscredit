@@ -9,7 +9,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher;
 
 /**
- * Репозиторий одноразового пароля домена
+ * Репозиторий одноразового пароля
  * 
  * @author Владислав Теренчук <asdof71@yandex.ru>
  */
@@ -19,12 +19,18 @@ final class OTPRepository extends ServiceEntityRepository implements OTPReposito
         parent::__construct($registry, OTP::class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function save(OTP $otp): void
     {
         $this->_em->persist($otp);
         $this->_em->flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function delete(OTP $otp): void
     {
         $this->_em->remove($otp);

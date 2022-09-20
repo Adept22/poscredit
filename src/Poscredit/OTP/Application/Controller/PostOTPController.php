@@ -15,7 +15,7 @@ use App\Poscredit\OTP\Application\Model\CreateOTPModel;
  * 
  * @author Владислав Теренчук <asdof71@yandex.ru>
  * 
- * @Route("/api/otp/", name="api_otp_post", methods={"POST"})
+ * @Route("/api/otp", name="api_otp_post", methods={"POST"})
  */
 final class PostOTPController extends AbstractController
 {

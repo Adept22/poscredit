@@ -3,7 +3,7 @@
 namespace App\Poscredit\SMSRU\Application\Model;
 
 /**
- * Описывает модель команды создания одноразового пароля
+ * Модель команды отправки смс
  * 
  * @author Владислав Теренчук <asdof71@yandex.ru>
  */

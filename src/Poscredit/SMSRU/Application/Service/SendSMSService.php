@@ -7,27 +7,44 @@ use App\Poscredit\Shared\ValueObject\Phone;
 use App\Poscredit\SMSRU\Domain\Entity\SMS;
 use App\Poscredit\SMSRU\Domain\Repository\SMSRepositoryInterface;
 use App\Poscredit\SMSRU\Application\Model\SendSMSModel;
+use App\Poscredit\SMSRU\Infrastructure\Repository\SMSRepository;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-final class SendSMSService
+/**
+ * Слушает событие отправки смс
+ * 
+ * @author Владислав Теренчук <asdof71@yandex.ru>
+ */
+final class SendSMSService implements MessageHandlerInterface
 {
-    private SMSRepositoryInterface $smsRepository;
+    private ContainerInterface $container;
+
     private EventDispatcherInterface $eventDispatcher;
+
     private SerializerInterface $serializer;
+    
+    /** 
+     * @var SMSRepository $smsRepository 
+     */
+    private SMSRepositoryInterface $smsRepository;
 
     public function __construct(
         SMSRepositoryInterface $smsRepository,
+        ContainerInterface $container,
         EventDispatcherInterface $eventDispatcher,
         SerializerInterface $serializer
     ) {
         $this->smsRepository = $smsRepository;
+        $this->container = $container;
         $this->eventDispatcher = $eventDispatcher;
         $this->serializer = $serializer;
     }
 
-    public function handle(SendSMSModel $sendSMSModel): string
+    public function __invoke(SendSMSModel $sendSMSModel): string
     {
         // TODO: Как временное решение для нескольких получателей, если абстрагироваться от ОТП.
         $receivers = $sendSMSModel->getTo();
@@ -47,14 +64,14 @@ final class SendSMSService
         $created = [];
 
         // Не совсем корректно, если вдруг все смс через API ушли, 
-        // а тут на каком-то упадет, то следующие просто не запишутся.
-        foreach ($receivers as $to) {
+        // а тут на каком-то упадет, то не обработанные просто не запишутся.
+        foreach ($json->sms as $to => $sms) {
             $sms = SMS::create(
                 new ID(Uuid::uuid1()),
                 new Phone($to),
                 $sendSMSModel->getMsg(),
-                $json->$to->sms_id,
-                $json->$to->status_code
+                $sms->status_code,
+                $sms->sms_id ?? null
             );
 
             $this->smsRepository->save($sms);

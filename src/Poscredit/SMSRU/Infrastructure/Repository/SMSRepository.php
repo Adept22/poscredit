@@ -18,12 +18,18 @@ final class SMSRepository extends ServiceEntityRepository implements SMSReposito
         parent::__construct($registry, SMS::class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function save(SMS $sms): void
     {
         $this->_em->persist($sms);
         $this->_em->flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function delete(SMS $sms): void
     {
         $this->_em->remove($sms);

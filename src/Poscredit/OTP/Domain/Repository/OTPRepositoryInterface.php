@@ -12,7 +12,7 @@ use App\Poscredit\OTP\Domain\Entity\OTP;
 interface OTPRepositoryInterface
 {
     /**
-     * Сохраняет одноразовый пароль
+     * Сохраняет сущность
      * 
      * @param OTP $otp
      * 
@@ -21,7 +21,7 @@ interface OTPRepositoryInterface
     public function save(OTP $comment): void;
 
     /**
-     * Удаляет одноразовый пароль
+     * Удаляет сущность
      * 
      * @param OTP $otp
      * 

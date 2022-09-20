@@ -6,64 +6,56 @@ use App\Poscredit\Shared\ValueObject\AbstractValueObject;
 use Symfony\Component\PasswordHasher\Hasher\NativePasswordHasher;
 
 /**
- * Идентификатор одноразового пароля домена
+ * Код одноразового пароля
  * 
  * @author Владислав Теренчук <asdof71@yandex.ru>
  */
 final class Code extends AbstractValueObject
 {
-    private NativePasswordHasher $passwordHasher;
+    private string $plain;
 
     protected string $code;
 
-    protected string $hash;
-
-    public function __construct()
+    public function __construct(?string $plain = null)
     {
-        $code = sprintf("%06d", mt_rand(1, 999999));
+        $this->plain = $plain ?? sprintf("%06d", mt_rand(1, 999999));
         
-        $this->passwordHasher = new NativePasswordHasher(null, null, 12, \PASSWORD_BCRYPT);
-
-        $this->code = $code;
-        $this->hash($code);
+        $this->code = (new NativePasswordHasher())->hash($this->plain);
     }
 
-    /**
-     * @param string $plain
-     * 
-     * @return void
-     */
-    protected function hash(string $plain): void
+    public function getPlain(): string
     {
-        $this->hash = $this->passwordHasher->hash($plain);
+        return $this->plain;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getValue(): int
+    public function getCode(): string
     {
         return $this->code;
     }
 
     /**
+     * Проверяет совпадение кода с сохраненым хешем
+     * 
      * @param string $plain
      * 
      * @return bool
      */
-    public function compare(string $plain): bool
+    public function verify(string $plain): bool
     {
-        return $this->passwordHasher->verify($this->hash, $plain);
+        return (new NativePasswordHasher())->verify($this->code, $plain);
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
-    public function __toString()
+    public function getValue(): string
     {
-        return $this->hash;
+        return $this->code;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function validate($value): void
     { }
 }

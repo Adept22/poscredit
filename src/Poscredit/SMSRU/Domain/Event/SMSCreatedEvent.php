@@ -7,7 +7,7 @@ use App\Poscredit\Shared\ValueObject\ID;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- * Событие созданного одноразового пароля
+ * Событие созданной смс
  * 
  * @author Владислав Теренчук <asdof71@yandex.ru>
  */

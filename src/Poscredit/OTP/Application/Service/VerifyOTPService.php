@@ -44,8 +44,8 @@ final class VerifyOTPService implements MessageHandlerInterface
         if (!$otp || $otp->getExpiresAt() < new \DateTimeImmutable()) {
             throw new \InvalidArgumentException('OTP is expired, please send a new one');
         }
-
-        $eq = $this->otpRepository->verify($otp, $verifyOTPModel->getCode());
+        
+        $eq = $otp->getCode()->verify($verifyOTPModel->getCode());
 
         if ($eq) {
             $this->otpRepository->delete($otp);
@@ -55,6 +55,6 @@ final class VerifyOTPService implements MessageHandlerInterface
             $this->eventDispatcher->dispatch($domainEvent);
         }
 
-        return $this->serializer->serialize($eq, 'json');
+        return $this->serializer->serialize(["success" => $eq], 'json');
     }
 }

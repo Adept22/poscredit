@@ -12,11 +12,20 @@ use App\Poscredit\SMSRU\Domain\Entity\SMS;
 interface SMSRepositoryInterface
 {
     /**
-     * Сохраняет одноразовый пароль
+     * Сохраняет сущность пароль
      * 
      * @param SMS $sms
      * 
      * @return void
      */
     public function save(SMS $comment): void;
+
+    /**
+     * Удаляет сущность
+     * 
+     * @param SMS $sms
+     * 
+     * @return void
+     */
+    public function delete(SMS $comment): void;
 }

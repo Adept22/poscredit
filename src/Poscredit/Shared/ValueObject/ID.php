@@ -19,20 +19,17 @@ final class ID extends AbstractValueObject
         $this->id = $id;
     }
 
+    public function getId(): UuidInterface
+    {
+        return $this->id;
+    }
+
     /**
      * {@inheritDoc}
      */
     public function getValue(): UuidInterface
     {
         return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return (string) $this->getValue();
     }
 
     public function validate($value): void

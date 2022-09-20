@@ -3,10 +3,9 @@
 namespace App\Poscredit\Shared\ValueObject;
 
 use App\Poscredit\Shared\ValueObject\AbstractValueObject;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Идентификатор одноразового пароля домена
+ * Телефон
  * 
  * @author Владислав Теренчук <asdof71@yandex.ru>
  */
@@ -14,11 +13,16 @@ final class Phone extends AbstractValueObject
 {
     protected string $phone;
 
-    public function __construct(string $value)
+    public function __construct(string $phone)
     {
-        $this->validate($value);
+        $this->validate($phone);
 
-        $this->phone = $value;
+        $this->phone = $phone;
+    }
+
+    public function getPhone(): string
+    {
+        return $this->phone;
     }
 
     /**
@@ -30,16 +34,11 @@ final class Phone extends AbstractValueObject
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
-    public function __toString()
+    public function validate($phone): void
     {
-        return $this->getValue();
-    }
-
-    public function validate($value): void
-    {
-        if (!preg_match('/^(?:7|8)\d{10}$/', $value)) {
+        if (!preg_match('/^(?:7|8)\d{10}$/', $phone)) {
             throw new \InvalidArgumentException("Not valid phone");
         }
     }

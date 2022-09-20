@@ -63,7 +63,7 @@ final class CreateOTPService implements MessageHandlerInterface
 
         $this->eventDispatcher->dispatch(new OnOTPCreatedEvent(
             (string) $otp->getPhone(),
-            $otp->getCode()->getValue()
+            $otp->getCode()->getPlain()
         ));
 
         return $this->serializer->serialize($otp, 'json');
